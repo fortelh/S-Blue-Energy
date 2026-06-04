@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-Blue Energy | Client Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Navbar Layout -->
+   <header class="bg-white border-b p-4 flex justify-between items-center shadow-xs px-10">
+    <div class="flex items-center gap-6">
+        <h1 class="font-black text-xl text-blue-950 tracking-wide">S-BLUE PORTAL</h1>
+        
+        <a href="/" class="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-blue-950 transition border-l pl-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Return to Site
+        </a>
+    </div>
+
+    <a href="/auth/logout" class="text-xs font-bold text-red-500 hover:underline flex items-center gap-2">
+        <span>Log Out</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+        </svg>
+    </a>
+</header>
+
+    <main class="max-w-3xl mx-auto mt-12 p-4">
+        <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+            <!-- Header Banner displaying customer ID -->
+            <div class="bg-blue-950 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold" id="txt-welcome-name">Loading Profile...</h2>
+                    <p class="text-xs text-blue-300 mt-1">Manage your corporate node registration fields below.</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-blue-400 block">Customer ID Tracking Node</span>
+                    <span class="text-md font-mono font-bold bg-white/10 px-3 py-1 rounded-lg mt-1 inline-block border border-white/20" id="txt-customer-id">SBLU-XXXXXX</span>
+                </div>
+            </div>
+
+            <!-- Profile Fields Form -->
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Username (Fixed Reference)</label>
+                        <input type="text" id="profile-username" disabled class="w-full p-3 border rounded-xl bg-gray-50 text-gray-400 font-semibold text-xs cursor-not-allowed">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Legal Full Name</label>
+                        <input type="text" id="profile-name" class="w-full p-3 border rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-950 focus:outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Primary Contact Email</label>
+                        <input type="email" id="profile-email" class="w-full p-3 border rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-950 focus:outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Phone Connection Line</label>
+                        <input type="text" id="profile-phone" class="w-full p-3 border rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-950 focus:outline-none">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Operational Installation Base Address</label>
+                    <input type="text" id="profile-address" class="w-full p-3 border rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-950 focus:outline-none">
+                </div>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="saveProfileData()" class="bg-blue-950 hover:bg-blue-900 text-white font-bold text-xs uppercase px-6 py-3 rounded-xl transition shadow-md">
+                        Save Account Updates
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Load user details immediately on page entry
+        function fetchMyProfile() {
+            fetch('/api/profile/me')
+                .then(res => {
+                    if(!res.ok) window.location.href = '/login.html'; // Kick out if not signed in
+                    return res.json();
+                })
+                .then(user => {
+                    document.getElementById('txt-welcome-name').innerText = user.name;
+                    document.getElementById('txt-customer-id').innerText = user.account_number;
+                    
+                    document.getElementById('profile-username').value = user.username;
+                    document.getElementById('profile-name').value = user.name || '';
+                    document.getElementById('profile-email').value = user.email || '';
+                    document.getElementById('profile-phone').value = user.phone || '';
+                    document.getElementById('profile-address').value = user.address || '';
+                });
+        }
+
+      function saveProfileData() {
+    const updatePayload = {
+        name: document.getElementById('profile-name').value,
+        email: document.getElementById('profile-email').value,
+        phone: document.getElementById('profile-phone').value,
+        address: document.getElementById('profile-address').value,
+        // Adding this in case you ever want to change passwords from this form
+        new_password: "" 
+    };
+
+    // CHANGE THIS URL to match your new server route:
+    fetch('/api/user/update-profile', { 
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(updatePayload)
+    }).then(res => {
+        if (res.ok) {
+            alert('Your details have been successfully synchronized.');
+            // This triggers the name update in your navbar/header
+            location.reload(); 
+        } else {
+            alert('Failed to save profile changes. Error Code: ' + res.status);
+        }
+    });
+}
+        // Initialize execution grid
+        fetchMyProfile();
+    </script>
+</body>
+</html>

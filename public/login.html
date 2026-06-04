@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S-Blue | Client Access Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-6">
+
+    <div class="bg-white p-8 rounded-3xl border border-gray-200 shadow-xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-black text-blue-950 tracking-tight">CLIENT PORTAL</h1>
+            <p id="portal-subtitle" class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Secure Customer Dashboard Access</p>
+        </div>
+
+        <!-- CLIENT LOGIN COMPONENT -->
+        <form id="login-form" action="/auth/login" method="POST" class="space-y-4">
+            <input type="text" name="username" placeholder="Username Account ID" required class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:ring-2 focus:ring-blue-950 text-sm">
+            <input type="password" name="password" placeholder="Account Password" required class="w-full p-3 border rounded-xl bg-gray-50 outline-none focus:ring-2 focus:ring-blue-950 text-sm">
+            <button type="submit" class="w-full bg-blue-950 hover:bg-black text-white font-bold py-3 rounded-xl transition uppercase text-xs tracking-widest shadow-sm">Sign In</button>
+            <p class="text-center text-[11px] text-gray-500 mt-4">
+                Need premium tracking access? <button type="button" onclick="toggleMode('signup')" class="text-blue-600 font-extrabold hover:underline">Create Portal Account</button>
+            </p>
+        </form>
+
+        <!-- CLIENT SIGNUP COMPONENT (Hidden by Default) -->
+        <form id="signup-form" action="/auth/signup" method="POST" class="hidden space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+                <input type="text" name="username" placeholder="Choose Username" required class="p-3 border rounded-xl bg-gray-50 text-xs outline-none">
+                <input type="password" name="password" placeholder="Create Password" required class="p-3 border rounded-xl bg-gray-50 text-xs outline-none">
+            </div>
+            <input type="text" name="name" placeholder="Full Legal Name" required class="w-full p-3 border rounded-xl bg-gray-50 text-xs outline-none">
+            <input type="email" name="email" placeholder="Email Contact Node" required class="w-full p-3 border rounded-xl bg-gray-50 text-xs outline-none">
+            <input type="text" name="phone" placeholder="Phone String Connection" required class="w-full p-3 border rounded-xl bg-gray-50 text-xs outline-none">
+            
+            <div class="space-y-0.5">
+                <label class="text-[9px] text-gray-400 font-bold uppercase ml-1 block">Date of Birth Metric</label>
+                <input type="date" name="dob" required class="w-full p-3 border rounded-xl bg-gray-50 text-xs outline-none text-gray-500">
+            </div>
+            
+            <textarea name="address" placeholder="Physical Mailing/Billing Address" required class="w-full p-3 border rounded-xl bg-gray-50 h-16 text-xs outline-none"></textarea>
+            
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition uppercase text-xs tracking-widest shadow-sm">Execute Secure Registration</button>
+            <p class="text-center text-[11px] text-gray-500 mt-4">
+                Already registered in index? <button type="button" onclick="toggleMode('login')" class="text-blue-600 font-extrabold hover:underline">Return to Login</button>
+            </p>
+        </form>
+
+        <div class="mt-8 pt-4 border-t text-center">
+            <a href="/" class="text-xs text-gray-400 hover:text-blue-950 font-bold transition">← Return to Core Site</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleMode(target) {
+            const login = document.getElementById('login-form');
+            const signup = document.getElementById('signup-form');
+            const subtitle = document.getElementById('portal-subtitle');
+
+            if (target === 'signup') {
+                login.classList.add('hidden');
+                signup.classList.remove('hidden');
+                subtitle.innerText = "New Infrastructure Account Request";
+            } else {
+                signup.classList.add('hidden');
+                login.classList.remove('hidden');
+                subtitle.innerText = "Secure Customer Dashboard Access";
+            }
+        }
+    </script>
+</body>
+</html>

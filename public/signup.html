@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S-Blue Client Registry Creation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+    <div class="bg-white p-8 rounded-2xl border shadow-md w-full max-w-md">
+        <h2 class="text-xl font-black text-blue-950 mb-1">Portal Membership Registration</h2>
+        <p class="text-xs text-gray-400 mb-6 font-medium">Provision identity tracking parameters into system indices matrix nodes.</p>
+        
+        <form action="/auth/signup" method="POST" class="space-y-4 text-xs font-medium">
+            <div class="grid grid-cols-2 gap-4">
+                <input type="text" name="username" placeholder="Username Key Token" required class="p-2.5 border rounded-xl w-full bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500">
+                <input type="password" name="password" placeholder="Account Password" required class="p-2.5 border rounded-xl w-full bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+            <hr class="border-gray-100">
+            <input type="text" name="name" placeholder="Legal Profile Full Name String" required class="p-2.5 border rounded-xl w-full bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500">
+            <input type="email" name="email" placeholder="Primary Communications Email Node" required class="p-2.5 border rounded-xl w-full bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500">
+            <input type="text" name="phone" placeholder="Active Mobile Phone Connection String" required class="p-2.5 border rounded-xl w-full bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500">
+            
+            <div class="space-y-1">
+                <label class="text-[10px] text-gray-400 uppercase tracking-wider block font-bold pl-1">Date of Birth Record (DOB)</label>
+                <input type="date" name="dob" required class="p-2.5 border rounded-xl w-full bg-gray-50 text-gray-500 outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+            
+            <textarea name="address" placeholder="Complete Location Verification Mailing Postal Address Parameters Block Data..." required class="p-2.5 border rounded-xl w-full bg-gray-50 h-16 outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+            
+            <button type="submit" class="w-full bg-blue-950 hover:bg-black text-white font-bold py-3 rounded-xl tracking-wider transition uppercase text-[10px]">Execute Onboarding Sequence</button>
+        </form>
+        <div class="text-center mt-4">
+            <a href="/login.html" class="text-[11px] text-blue-600 font-bold hover:underline">Already configured? Authentication sequence terminal gateway</a>
+        </div>
+    </div>
+</body>
+</html>

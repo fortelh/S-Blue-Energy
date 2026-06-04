@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-Blue Energy | Services Portfolio Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <!-- HEADER NAVIGATION -->
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div id="dynamic-logo">
+                <a href="/" class="text-xl font-black text-blue-950 tracking-wider">S-BLUE ENERGY</a>
+            </div>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-gray-600">
+                <a href="/" class="hover:text-blue-950 transition">Home</a>
+                <a href="/services.html" class="text-blue-950 border-b-2 border-blue-950 pb-1">Services</a>
+                <a href="/projects.html" class="hover:text-blue-950 transition">Projects</a>
+                <a href="/about.html" class="hover:text-blue-950 transition">About Us</a>
+                <a href="/contact.html" class="hover:text-blue-950 transition">Contact</a>
+            </nav>
+            <div id="nav-auth-zone" class="flex items-center gap-4">
+                <a href="/login.html" class="bg-blue-950 text-white text-xs font-bold px-5 py-2.5 rounded-xl">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-16 space-y-10">
+        <div>
+            <h1 class="text-4xl font-black text-blue-950 tracking-tight">Capabilities & Services Directory</h1>
+            <p class="text-gray-500 text-sm mt-1">Full operational resource index deployment schemas.</p>
+        </div>
+
+        <!-- DYNAMIC SERVICES MASTER CONTAINER -->
+        <div id="services-master-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <p class="text-gray-400 italic col-span-3 text-center">Querying database nodes...</p>
+        </div>
+    </main>
+
+    <script>
+        // 1. Dynamic Identity Sync (Logo)
+        fetch('/api/settings/logo').then(r => r.json()).then(d => {
+            if (d && d.value) {
+                document.getElementById('dynamic-logo').innerHTML = `<a href="/"><img src="${d.value}" class="h-40 w-auto object-contain" alt="S-Blue Logo"></a>`;
+            }
+        });
+
+        // 2. Fetch and Render ALL Services
+        fetch('/api/services')
+            .then(r => r.json())
+            .then(data => {
+                const grid = document.getElementById('services-master-grid');
+                if(!data || data.length === 0) {
+                    grid.innerHTML = `<p class="text-gray-400 text-sm italic py-6 text-center col-span-3">No active modules configured in database.</p>`;
+                    return;
+                }
+                // Maps every service in your database entry array without truncating (.slice is removed here)
+                grid.innerHTML = data.map(s => `
+                    <div class="bg-white border rounded-3xl shadow-xs overflow-hidden flex flex-col justify-between hover:shadow-md transition duration-300">
+                        <div>
+                            <div class="w-full h-48 bg-gray-100 overflow-hidden border-b">
+                                <img src="${s.image_url || '/uploads/fallback.jpg'}" class="w-full h-full object-cover" alt="">
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-1 rounded-md inline-block">${s.description || 'System Service'}</span>
+                                <h3 class="text-xl font-black text-blue-950 tracking-tight">${s.title}</h3>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <a href="/service-details.html?id=${s.id}" class="block text-center bg-gray-50 hover:bg-blue-950 hover:text-white text-blue-950 font-bold text-xs uppercase tracking-wider py-3 rounded-xl border transition-all duration-300">
+                                See Full Details →
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(err => {
+                console.error("Services fetch error:", err);
+                document.getElementById('services-master-grid').innerHTML = `<p class="text-red-500 text-sm italic py-6 text-center col-span-3">Failed to load services data registry.</p>`;
+            });
+async function saveServiceEdit(id) {
+    const payload = {
+        id: id,
+        title: document.getElementById('edit-service-title').value,
+        description: document.getElementById('edit-service-desc').value,
+        icon: document.getElementById('edit-service-icon').value
+    };
+
+    const res = await fetch('/admin/services/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+        alert("Service Registry Updated");
+        location.reload();
+    }
+}
+        // 3. Sync Login Status (The "My Portal" Switcher)
+        async function syncAuthUI() {
+            try {
+                const response = await fetch('/auth/status');
+                const auth = await response.json();
+
+                if (auth.loggedIn) {
+                    const navZone = document.getElementById('nav-auth-zone');
+                    if (navZone) {
+                        const targetPage = (auth.role === 'Owner' || auth.role === 'Manager') ? '/admin.html' : '/profile.html';
+                        
+                        navZone.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">👤 ${auth.name}</span>
+                                <a href="${targetPage}" class="bg-blue-950 hover:bg-blue-900 text-white text-[10px] font-bold px-5 py-2.5 rounded-xl transition shadow-sm uppercase">
+                                    My Portal
+                                </a>
+                                <a href="/auth/logout" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Log Out</a>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.error("Auth sync failed:", err);
+            }
+        }
+
+        syncAuthUI();
+    </script>
+</body>
+</html>

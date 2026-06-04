@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-Blue Energy | Service Specifications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="/" class="text-xl font-black text-blue-950 tracking-wider uppercase">S-BLUE ENERGY</a>
+            
+            <div id="nav-auth-zone" class="flex items-center gap-4">
+                <a href="/login.html" class="bg-blue-950 text-white text-xs font-bold px-5 py-2.5 rounded-xl">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <a href="/" class="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Return to Infrastructure Matrix
+        </a>
+
+        <div class="bg-white rounded-3xl border shadow-sm overflow-hidden">
+            <img id="img" class="w-full h-96 object-cover bg-gray-100">
+            
+            <div class="p-10 space-y-6">
+                <div>
+                    <span id="desc" class="text-xs font-extrabold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg">---</span>
+                    <h1 id="title" class="text-4xl font-black text-blue-950 tracking-tight mt-4">Loading Specification...</h1>
+                </div>
+
+                <div class="h-px bg-gray-100 w-full"></div>
+
+                <div id="content" class="text-gray-600 leading-relaxed text-lg whitespace-pre-wrap font-medium">
+                    Initialising secure data retrieval...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 1. Get Service ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const serviceId = params.get('id');
+
+        // 2. Fetch Data
+        if (serviceId) {
+            fetch('/api/services')
+                .then(r => r.json())
+                .then(data => {
+                    const s = data.find(item => item.id == serviceId);
+                    if (s) {
+                        document.getElementById('title').innerText = s.title;
+                        document.getElementById('desc').innerText = s.description || 'Core Service';
+                        document.getElementById('content').innerText = s.content;
+                        document.getElementById('img').src = s.image_url || '/uploads/fallback.jpg';
+                        document.title = `S-Blue | ${s.title}`;
+                    } else {
+                        document.getElementById('content').innerText = "Module not found in the active registry.";
+                    }
+                })
+                .catch(err => console.error("Data Fetch Error:", err));
+        }
+
+        // 3. Sync Authentication (To show My Portal button)
+        async function syncAuthUI() {
+            try {
+                const response = await fetch('/auth/status');
+                const auth = await response.json();
+                if (auth.loggedIn) {
+                    const navZone = document.getElementById('nav-auth-zone');
+                    const targetPage = (auth.role === 'Owner' || auth.role === 'Manager') ? '/admin.html' : '/profile.html';
+                    navZone.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <span class="text-[10px] font-bold text-gray-500 uppercase">👤 ${auth.name}</span>
+                            <a href="${targetPage}" class="bg-blue-950 text-white text-[10px] font-bold px-4 py-2 rounded-xl uppercase">My Portal</a>
+                        </div>
+                    `;
+                }
+            } catch (e) {}
+        }
+
+        syncAuthUI();
+    </script>
+</body>
+</html>

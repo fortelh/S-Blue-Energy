@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S-Blue Energy | Contact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div id="dynamic-logo"><span class="text-xl font-black text-blue-950 tracking-wider">S-BLUE</span></div>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-gray-600">
+                <a href="/" class="hover:text-blue-950 transition">Home</a>
+                <a href="/services.html" class="hover:text-blue-950 transition">Services</a>
+                <a href="/projects.html" class="hover:text-blue-950 transition">Projects</a>
+                <a href="/about.html" class="hover:text-blue-950 transition">About Us</a>
+                <a href="/contact.html" class="text-blue-950 border-b-2 border-blue-950 pb-1">Contact</a>
+            </nav>
+            <div id="nav-auth-zone" class="flex items-center gap-4">
+                <a href="/login.html" class="bg-blue-950 text-white text-xs font-bold px-5 py-2.5 rounded-xl">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-lg mx-auto px-6 py-16">
+        <div class="bg-white p-8 rounded-2xl border shadow-sm space-y-6">
+            <div class="space-y-1">
+                <h1 class="text-2xl font-black text-blue-950">Communications Gateway</h1>
+                <p class="text-xs text-gray-400">Transmit incoming technical signals into server mail matrices.</p>
+            </div>
+            <form class="space-y-4 text-xs font-medium">
+                <div>
+                    <label class="block text-gray-500 mb-1">Corporate/Personal Name</label>
+                    <input type="text" placeholder="Full Identity" required class="w-full p-2.5 border rounded-xl bg-gray-50 outline-none">
+                </div>
+                <div>
+                    <label class="block text-gray-500 mb-1">Return Email Terminal</label>
+                    <input type="email" placeholder="name@company.com" required class="w-full p-2.5 border rounded-xl bg-gray-50 outline-none">
+                </div>
+                <div>
+                    <label class="block text-gray-500 mb-1">Payload Content Information</label>
+                    <textarea placeholder="Write text array message vectors here..." required class="w-full p-2.5 border rounded-xl bg-gray-50 h-32 outline-none"></textarea>
+                </div>
+                <button type="button" onclick="alert('Message packet transmission simulated successfully.')" class="w-full bg-blue-950 text-white font-bold py-3 rounded-xl uppercase tracking-wider text-[10px]">Transmit Payload</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // 1. Load the Logo
+        fetch('/api/settings/logo').then(r => r.json()).then(d => {
+            if(d && d.value) document.getElementById('dynamic-logo').innerHTML = `<img src="${d.value}" class="h-40 w-auto object-contain">`;
+        });
+
+        // 2. Load the About Text
+        fetch('/api/settings/about').then(r => r.json()).then(d => {
+            const display = document.getElementById('about-display-pane');
+            if(d && d.value) {
+                display.innerText = d.value;
+                display.classList.remove('italic', 'text-gray-400');
+            } else {
+                display.innerText = "System admin bio record profile has not been assigned a specific identity text yet.";
+            }
+        });
+
+        // 3. Sync Login Status (The "My Portal" Switcher)
+        async function syncAuthUI() {
+            try {
+                const response = await fetch('/auth/status');
+                const auth = await response.json();
+
+                if (auth.loggedIn) {
+                    const navZone = document.getElementById('nav-auth-zone');
+                    if (navZone) {
+                        const targetPage = (auth.role === 'Owner' || auth.role === 'Manager') ? '/admin.html' : '/profile.html';
+                        
+                        navZone.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">👤 ${auth.name}</span>
+                                <a href="${targetPage}" class="bg-blue-950 hover:bg-blue-900 text-white text-[10px] font-bold px-5 py-2.5 rounded-xl transition shadow-sm uppercase">
+                                    My Portal
+                                </a>
+                                <a href="/auth/logout" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Log Out</a>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.error("Auth sync failed:", err);
+            }
+        }
+
+        // Run immediately on load
+        syncAuthUI();
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S-Blue Energy | About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div id="dynamic-logo"><span class="text-xl font-black text-blue-950 tracking-wider">S-BLUE</span></div>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-gray-600">
+                <a href="/" class="hover:text-blue-950 transition">Home</a>
+                <a href="/services.html" class="hover:text-blue-950 transition">Services</a>
+                <a href="/projects.html" class="hover:text-blue-950 transition">Projects</a>
+                <a href="/about.html" class="text-blue-950 border-b-2 border-blue-950 pb-1">About Us</a>
+                <a href="/contact.html" class="hover:text-blue-950 transition">Contact</a>
+            </nav>
+            <div id="nav-auth-zone" class="flex items-center gap-4">
+                <a href="/login.html" class="bg-blue-950 text-white text-xs font-bold px-5 py-2.5 rounded-xl">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 py-20 text-center space-y-6">
+        <h1 class="text-4xl font-black text-blue-950">Corporate Directives & Missions</h1>
+        <div class="bg-white p-10 rounded-2xl border text-left leading-relaxed text-gray-600 shadow-sm">
+            <p id="about-display-pane" class="italic text-gray-400">Loading active corporate description parameters...</p>
+        </div>
+    </main>
+
+    <script>
+        // 1. Load the Logo
+        fetch('/api/settings/logo').then(r => r.json()).then(d => {
+            if(d && d.value) document.getElementById('dynamic-logo').innerHTML = `<img src="${d.value}" class="h-40 w-auto object-contain">`;
+        });
+
+        // 2. Load the About Text
+        fetch('/api/settings/about_text')
+    .then(res => res.json())
+    .then(data => {
+        if(data.value) {
+            document.getElementById('about-content-area').innerText = data.value;
+        }
+    });
+
+        // 3. Sync Login Status (The "My Portal" Switcher)
+        async function syncAuthUI() {
+            try {
+                const response = await fetch('/auth/status');
+                const auth = await response.json();
+
+                if (auth.loggedIn) {
+                    const navZone = document.getElementById('nav-auth-zone');
+                    if (navZone) {
+                        const targetPage = (auth.role === 'Owner' || auth.role === 'Manager') ? '/admin.html' : '/profile.html';
+                        
+                        navZone.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">👤 ${auth.name}</span>
+                                <a href="${targetPage}" class="bg-blue-950 hover:bg-blue-900 text-white text-[10px] font-bold px-5 py-2.5 rounded-xl transition shadow-sm uppercase">
+                                    My Portal
+                                </a>
+                                <a href="/auth/logout" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Log Out</a>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.error("Auth sync failed:", err);
+            }
+        }
+
+        // Run immediately on load
+        syncAuthUI();
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // We fetch specifically the 'about_text' key
+        fetch('/api/settings/about_text')
+            .then(res => res.json())
+            .then(data => {
+                const pane = document.getElementById('about-display-pane');
+                if (data && data.value) {
+                    // Update the text and remove the "Loading..." styling
+                    pane.innerText = data.value;
+                    pane.classList.remove('italic', 'text-gray-400');
+                    pane.classList.add('text-gray-700');
+                } else {
+                    pane.innerText = "S-Blue Energy mission parameters are currently being synchronized.";
+                }
+            })
+            .catch(err => {
+                console.error("Matrix Sync Error:", err);
+                document.getElementById('about-display-pane').innerText = "Terminal offline. Link to core database severed.";
+            });
+    });
+</script>
+</body>
+</html>

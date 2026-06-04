@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-Blue Energy | Corporate Infrastructure Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div id="dynamic-logo">
+                <a href="/" class="text-xl font-black text-blue-950 tracking-wider">S-BLUE ENERGY</a>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-gray-600">
+                <a href="/" class="text-blue-950 border-b-2 border-blue-950 pb-1">Home</a>
+                <a href="/services.html" class="hover:text-blue-950 transition">Services</a>
+                <a href="/projects.html" class="hover:text-blue-950 transition">Projects</a>
+                <a href="/about.html" class="hover:text-blue-950 transition">About Us</a>
+                <a href="/contact.html" class="hover:text-blue-950 transition">Contact</a>
+            </nav>
+
+            <div id="nav-auth-zone" class="flex items-center gap-4">
+                <a href="/login.html" class="bg-blue-950 hover:bg-blue-900 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-sm">
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative bg-blue-950 text-white overflow-hidden py-24 md:py-32">
+        <div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        
+        <div class="relative max-w-5xl mx-auto px-6 text-center space-y-6">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-blue-400 bg-blue-900/50 px-4 py-1.5 rounded-full inline-block">
+                Enterprise Energy Matrix
+            </span>
+            <h2 class="text-4xl md:text-6xl font-black tracking-tight leading-tight max-w-4xl mx-auto">
+                Engineering Next-Generation Industrial Infrastructure
+            </h2>
+            
+            <div class="max-w-3xl mx-auto pt-6 border-t border-blue-800/60 mt-8">
+                <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3">Corporate Dossier</h3>
+                <p id="dossier-text" class="text-base md:text-lg text-gray-300 leading-relaxed font-medium italic">
+                    Synchronizing operational dossier parameters...
+                </p>
+            </div>
+
+            <div class="pt-4">
+                <a href="/contact.html" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider px-8 py-4 rounded-xl transition shadow-md inline-block">
+                    Initiate Infrastructure Consultation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-6 py-20 space-y-24">
+
+        <section class="space-y-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-6">
+                <div>
+                    <h2 class="text-3xl font-black text-blue-950 tracking-tight">Core Services Capability Matrix</h2>
+                    <p class="text-gray-500 text-sm mt-1">Real-time deployments and structural energy utilities.</p>
+                </div>
+                <a href="/services.html" class="text-sm font-bold text-blue-600 hover:underline shrink-0">
+                    View Complete Directory Catalog →
+                </a>
+            </div>
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <p class="text-center text-gray-400 italic py-8 col-span-3">Loading active capabilities registry...</p>
+            </div>
+        </section>
+
+        <section class="space-y-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-6">
+                <div>
+                    <h2 class="text-3xl font-black text-blue-950 tracking-tight">Active Infrastructure Projects</h2>
+                    <p class="text-gray-500 text-sm mt-1">Operational footprints and systemic engineering proofs.</p>
+                </div>
+                <a href="/projects.html" class="text-sm font-bold text-blue-600 hover:underline shrink-0">
+                    Explore Project Archives →
+                </a>
+            </div>
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <p class="text-center text-gray-400 italic py-8 col-span-3">Loading infrastructure asset records...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t py-12 mt-20 text-center text-xs text-gray-400 font-medium">
+        <div class="max-w-7xl mx-auto px-6 space-y-2">
+            <p class="font-bold text-blue-950 text-sm tracking-wider">S-BLUE ENERGY GLOBAL SYSTEMS</p>
+            <p>&copy; 2026 Architectural Data Management Node. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Unified Authentication Sync
+        async function syncAuthUI() {
+            try {
+                const response = await fetch('/auth/status');
+                const auth = await response.json();
+
+                if (auth.loggedIn) {
+                    const navZone = document.getElementById('nav-auth-zone');
+                    if (navZone) {
+                        const targetPage = (auth.role === 'Owner' || auth.role === 'Manager') ? '/admin.html' : '/profile.html';
+                        navZone.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">👤 ${auth.name}</span>
+                                <a href="${targetPage}" class="bg-blue-950 hover:bg-blue-900 text-white text-[10px] font-bold px-5 py-2.5 rounded-xl transition shadow-sm uppercase">
+                                    My Portal
+                                </a>
+                                <a href="/auth/logout" class="text-[10px] text-red-500 font-bold uppercase hover:underline">Sign Out</a>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.error("Auth sync failed:", err);
+            }
+        }
+
+        // 2. Global Identity Sync (Logo)
+        fetch('/api/settings/logo').then(r => r.json()).then(d => {
+            if (d && d.value) {
+                document.getElementById('dynamic-logo').innerHTML = `<a href="/"><img src="${d.value}" class="h-40 w-auto object-contain" alt="S-Blue Logo"></a>`;
+            }
+        });
+
+        // 3. Dossier Text Sync
+       fetch('/api/settings/dossier_text')
+    .then(res => res.json())
+    .then(data => {
+        if(data.value) {
+            document.getElementById('dossier-display').innerText = data.value;
+        }
+    });
+
+        // 4. Services Grid Sync
+        fetch('/api/services').then(r => r.json()).then(data => {
+            const grid = document.getElementById('services-grid');
+            if(!data || data.length === 0) {
+                grid.innerHTML = `<p class="text-gray-400 text-sm italic py-6 text-center col-span-3">No active modules configured.</p>`;
+                return;
+            }
+            grid.innerHTML = data.slice(0, 3).map(s => `
+                <div class="bg-white border rounded-3xl shadow-xs overflow-hidden flex flex-col justify-between hover:shadow-md transition duration-300">
+                    <div>
+                        <div class="w-full h-48 bg-gray-100 overflow-hidden border-b">
+                            <img src="${s.image_url || '/uploads/fallback.jpg'}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-1 rounded-md inline-block">${s.description || 'System Service'}</span>
+                            <h3 class="text-xl font-black text-blue-950 tracking-tight">${s.title}</h3>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <a href="/service-details.html?id=${s.id}" class="block text-center bg-gray-50 hover:bg-blue-950 hover:text-white text-blue-950 font-bold text-xs uppercase tracking-wider py-3 rounded-xl border transition-all duration-300">
+                            See Full Details →
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+       // 5. Projects Grid Sync
+fetch('/api/projects').then(r => r.json()).then(data => {
+    const grid = document.getElementById('projects-grid');
+    if(!data || data.length === 0) {
+        grid.innerHTML = `<p class="text-gray-400 text-sm italic py-6 text-center col-span-3">No projects found.</p>`;
+        return;
+    }
+    grid.innerHTML = data.slice(0, 3).map(p => `
+        <div class="bg-white border rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition duration-300 flex flex-col justify-between">
+            <div>
+                <div class="w-full h-52 bg-gray-100 overflow-hidden">
+                    <img src="${p.image_url || '/uploads/fallback.jpg'}" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6 space-y-1">
+                    <h4 class="text-lg font-black text-blue-950 tracking-tight">${p.title}</h4>
+                    <p class="text-xs text-gray-400 font-semibold flex items-center gap-1">📍 ${p.location || 'Global Site'}</p>
+                </div>
+            </div>
+            <div class="p-6 pt-0">
+                <a href="/project-details.html?id=${p.id}" class="block text-center bg-gray-50 hover:bg-blue-950 hover:text-white text-blue-950 font-bold text-xs uppercase tracking-wider py-3 rounded-xl border transition-all duration-300">
+                    See Full Details →
+                </a>
+            </div>
+        </div>
+    `).join('');
+}).catch(err => {
+    console.error("Project Load Error:", err);
+    document.getElementById('projects-grid').innerHTML = "Failed to sync project archives.";
+});
+
+        // Initialize Auth Check
+        syncAuthUI();
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Fetch the 'dossier_text' key from the backend database
+        fetch('/api/settings/dossier_text')
+            .then(res => res.json())
+            .then(data => {
+                const pane = document.getElementById('dossier-text');
+                if (pane) {
+                    if (data && data.value) {
+                        // Inject your saved text and clean up the placeholder style
+                        pane.innerText = data.value;
+                        pane.classList.remove('italic', 'text-gray-400');
+                    } else {
+                        pane.innerText = "S-Blue Energy operational dossier parameters are currently being configured.";
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Dossier Matrix Sync Error:", err);
+                const pane = document.getElementById('dossier-text');
+                if (pane) pane.innerText = "Terminal offline. Link to core dossier database severed.";
+            });
+    });
+</script>
+</body>
+</html>
