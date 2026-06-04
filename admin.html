@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-Blue Energy | Enterprise Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-blue-950 text-white flex flex-col justify-between p-6 shrink-0 shadow-xl">
+        <div class="space-y-6">
+            <div class="border-b border-blue-800 pb-3">
+                <h1 class="text-lg font-black tracking-wider text-white">S-BLUE CONTROL</h1>
+                <p class="text-[9px] text-blue-400 font-bold uppercase mt-0.5">Core Operational Portal</p>
+            </div>
+            
+            <nav class="space-y-1 text-xs font-bold">
+                <p class="text-[10px] uppercase text-gray-500 tracking-wider font-black px-3 pt-2 pb-1">Branding & Layouts</p>
+                <button onclick="switchTab('tab-logo')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-gray-400 hover:bg-blue-900/50 hover:text-white flex items-center gap-2">🖼️ Global System Logo</button>
+                <button onclick="switchTab('tab-dossier')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-gray-400 hover:bg-blue-900/50 hover:text-white flex items-center gap-2">🏠 Homepage Dossier</button>
+                <button onclick="switchTab('tab-about')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-gray-400 hover:bg-blue-900/50 hover:text-white flex items-center gap-2">📖 About Page Text</button>
+                
+                <p class="text-[10px] uppercase text-gray-500 tracking-wider font-black px-3 pt-4 pb-1">System Connectors</p>
+                <button onclick="switchTab('tab-mail')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-blue-400 hover:bg-blue-900/50 flex items-center gap-2">⚙️ Mail SMTP Settings</button>
+                <button onclick="switchTab('tab-services')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-gray-400 hover:bg-blue-900/50 hover:text-white flex items-center gap-2">🛠️ Core Services</button>
+                <button onclick="switchTab('tab-projects')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-gray-400 hover:bg-blue-900/50 hover:text-white flex items-center gap-2">📂 Site Projects</button>
+                
+                <p class="text-[10px] uppercase text-gray-500 tracking-wider font-black px-3 pt-4 pb-1">User Registers</p>
+                <button onclick="switchTab('tab-customers')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-green-400 hover:bg-blue-900/50 flex items-center gap-2">👥 Customer Matrix</button>
+                <button onclick="switchTab('tab-staff')" class="tab-btn w-full text-left px-3 py-2.5 rounded-xl transition text-purple-400 hover:bg-blue-900/50 flex items-center gap-2">🛡️ Staff Matrix</button>
+            </nav>
+        </div>
+
+        <div class="pt-3 border-t border-blue-900">
+            <a href="/auth/logout" class="block text-center bg-red-950/40 hover:bg-red-900 text-red-400 font-bold text-xs uppercase tracking-wider py-2.5 rounded-xl transition">Terminate Session</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 p-10 overflow-y-auto bg-gray-50">
+        
+        <!-- LOGO -->
+        <div id="tab-logo" class="admin-tab hidden space-y-4">
+            <h2 class="text-2xl font-black text-blue-950">System Branding</h2>
+            <form action="/admin/update-logo" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-2xl border shadow-sm max-w-xl">
+                <input type="file" name="logo" required class="w-full p-2.5 border rounded-xl bg-gray-50 text-xs mb-4">
+                <button type="submit" class="bg-blue-950 text-white font-bold text-xs uppercase px-5 py-3 rounded-xl">Save Logo</button>
+            </form>
+        </div>
+
+        <!-- DOSSIER -->
+        <div id="tab-dossier" class="admin-tab hidden space-y-4">
+            <h2 class="text-2xl font-black text-blue-950">Homepage Hero Text</h2>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm max-w-3xl space-y-4">
+                <textarea id="inp-dossier" class="w-full h-32 p-4 border rounded-xl font-medium text-sm text-gray-700 bg-gray-50"></textarea>
+                <button onclick="commitSetting('dossier_text', 'inp-dossier')" class="bg-blue-950 text-white font-bold text-xs uppercase px-5 py-3 rounded-xl">Update Dossier</button>
+            </div>
+        </div>
+
+        <!-- ABOUT -->
+        <div id="tab-about" class="admin-tab hidden space-y-4">
+            <h2 class="text-2xl font-black text-blue-950">About Biography</h2>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm max-w-3xl space-y-4">
+                <textarea id="inp-about" class="w-full h-64 p-4 border rounded-xl font-medium text-sm text-gray-700 bg-gray-50"></textarea>
+                <button onclick="commitSetting('about_text', 'inp-about')" class="bg-blue-950 text-white font-bold text-xs uppercase px-5 py-3 rounded-xl">Update Biography</button>
+            </div>
+        </div>
+
+        <!-- SMTP -->
+        <div id="tab-mail" class="admin-tab hidden space-y-4">
+            <h2 class="text-2xl font-black text-blue-600">SMTP Configuration</h2>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm max-w-2xl space-y-4">
+                <input type="text" id="inp-smtp-host" placeholder="Host" class="w-full p-2.5 border rounded-lg text-xs">
+                <input type="text" id="inp-smtp-port" placeholder="Port" class="w-full p-2.5 border rounded-lg text-xs">
+                <input type="text" id="inp-smtp-user" placeholder="Email/User" class="w-full p-2.5 border rounded-lg text-xs">
+                <input type="password" id="inp-smtp-pass" placeholder="Password" class="w-full p-2.5 border rounded-lg text-xs">
+                <button onclick="saveSMTPConfig()" class="bg-blue-950 text-white font-bold text-xs uppercase px-5 py-3 rounded-xl">Save Settings</button>
+            </div>
+        </div>
+
+        <!-- SERVICES -->
+        <div id="tab-services" class="admin-tab hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h2 id="service-form-title" class="text-2xl font-black text-blue-950">Add Service</h2>
+                    <form id="form-services" action="/admin/services/create" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-2xl border shadow-sm grid grid-cols-2 gap-4">
+                        <input type="hidden" id="service-edit-id" name="id">
+                        <input type="text" id="service-title" name="title" required placeholder="Service Title" class="p-2.5 border rounded-xl text-xs">
+                        <input type="text" id="service-description" name="description" required placeholder="Short Tag" class="p-2.5 border rounded-xl text-xs">
+                        <textarea id="service-content" name="content" required placeholder="Full technical specs..." class="col-span-2 h-32 p-2.5 border rounded-xl text-xs"></textarea>
+                        <div class="col-span-2 space-y-1">
+                            <label class="text-[10px] text-gray-400 font-bold uppercase">Image File (Leave blank if keeping current image during edit)</label>
+                            <input type="file" id="service-image" name="image" required class="w-full p-2 border rounded-xl text-xs bg-gray-50">
+                        </div>
+                        <div class="col-span-2 flex gap-2">
+                            <button type="submit" id="service-submit-btn" class="flex-1 bg-blue-950 text-white font-bold text-xs uppercase py-3 rounded-xl">Publish Service</button>
+                            <button type="button" id="service-cancel-btn" onclick="resetServiceForm()" class="hidden bg-gray-200 text-gray-700 font-bold text-xs uppercase px-4 py-3 rounded-xl">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Services</h3>
+                    <div id="manage-services-list" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECTS -->
+        <div id="tab-projects" class="admin-tab hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h2 id="project-form-title" class="text-2xl font-black text-blue-950">Log Project</h2>
+                    <form id="form-projects" action="/admin/projects/create" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-2xl border shadow-sm grid grid-cols-2 gap-4">
+                        <input type="hidden" id="project-edit-id" name="id">
+                        <input type="text" id="project-title" name="title" required placeholder="Project Name" class="p-2.5 border rounded-xl text-xs">
+                        <input type="text" id="project-location" name="location" required placeholder="Location" class="p-2.5 border rounded-xl text-xs">
+                        <textarea id="project-content" name="content" placeholder="Description" class="col-span-2 h-24 p-2.5 border rounded-xl text-xs"></textarea>
+                        <div class="col-span-2 space-y-1">
+                            <label class="text-[10px] text-gray-400 font-bold uppercase">Image File (Leave blank if keeping current image during edit)</label>
+                            <input type="file" id="project-image" name="image" required class="w-full p-2 border rounded-xl text-xs bg-gray-50">
+                        </div>
+                        <div class="col-span-2 flex gap-2">
+                            <button type="submit" id="project-submit-btn" class="flex-1 bg-blue-950 text-white font-bold text-xs uppercase py-3 rounded-xl">Save Project</button>
+                            <button type="button" id="project-cancel-btn" onclick="resetProjectForm()" class="hidden bg-gray-200 text-gray-700 font-bold text-xs uppercase px-4 py-3 rounded-xl">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Projects</h3>
+                    <div id="manage-projects-list" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOMERS -->
+        <div id="tab-customers" class="admin-tab hidden space-y-6">
+            <h2 class="text-2xl font-black text-green-600">Customer Registry</h2>
+            <div id="customer-list" class="space-y-4 max-w-4xl"></div>
+        </div>
+
+        <!-- STAFF MATRIX -->
+        <div id="tab-staff" class="admin-tab hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Create/Edit Form Matrix -->
+                <div class="space-y-4 lg:col-span-1">
+                    <h2 id="staff-form-title" class="text-2xl font-black text-purple-600">Provision Staff</h2>
+                    <form id="form-staff" onsubmit="commitStaffForm(event)" class="bg-white p-6 rounded-2xl border shadow-sm space-y-4">
+                        <input type="hidden" id="staff-edit-id" value="">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Username Handle</label>
+                            <input type="text" id="staff-username" required placeholder="e.g. jsmith" class="w-full mt-1 p-2.5 border rounded-xl text-xs font-medium">
+                        </div>
+                        <div>
+                            <label id="staff-pass-label" class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Security Access Key (Password)</label>
+                            <input type="password" id="staff-password" required placeholder="••••••••" class="w-full mt-1 p-2.5 border rounded-xl text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Clearance Authority Level</label>
+                            <select id="staff-role" required class="w-full mt-1 p-2.5 border rounded-xl text-xs bg-white font-bold text-gray-700">
+                                <option value="Admin">Admin Level (Operations Only - No User Controls)</option>
+                                <option value="Manager">Manager Level (Full Access - Protected Root Keys)</option>
+                                <option value="Owner">Owner Level (Global Root Access Terminal)</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button type="submit" id="staff-submit-btn" class="flex-1 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs uppercase py-3 rounded-xl transition">Provision Operator</button>
+                            <button type="button" id="staff-cancel-btn" onclick="resetStaffForm()" class="hidden bg-gray-200 text-gray-700 font-bold text-xs uppercase px-4 py-3 rounded-xl">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Live Matrix Registry View -->
+                <div class="space-y-4 lg:col-span-2">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Personnel Matrix</h3>
+                    <div id="staff-list" class="bg-white rounded-2xl border shadow-sm divide-y overflow-hidden"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Local state matrices
+        let localServices = [];
+        let localProjects = [];
+        let localStaff = [];
+
+        // --- 1. CORE TAB CONTROLLER ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('bg-blue-900', 'text-white'));
+            
+            const activeTab = document.getElementById(tabId);
+            if(activeTab) activeTab.classList.remove('hidden');
+            if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('bg-blue-900', 'text-white');
+
+            if (tabId === 'tab-customers' || tabId === 'tab-staff') {
+                loadUserRegistries();
+            } else if (tabId === 'tab-services' || tabId === 'tab-projects') {
+                loadContentRegistries();
+            } else {
+                loadSystemConfigurations();
+            }
+        }
+
+        // --- 2. SETTINGS MANAGERS ---
+      function loadSystemConfigurations() {
+    fetch('/api/settings/all')
+        .then(r => r.json())
+        .then(data => {
+            // Use optional chaining or check existence to prevent crashes
+            const dossierInp = document.getElementById('inp-dossier');
+            const aboutInp = document.getElementById('inp-about');
+            
+            if(dossierInp) dossierInp.value = data.dossier_text || "";
+            if(aboutInp) aboutInp.value = data.about_text || "";
+            
+            // SMTP Fields
+            if(document.getElementById('inp-smtp-host')) 
+                document.getElementById('inp-smtp-host').value = data.smtp_host || "";
+            // ... repeat for other SMTP fields
+        })
+        .catch(err => console.error("Data fetch failed, but keeping UI alive:", err));
+}
+
+    function commitSetting(key, inputId) {
+    const inputElement = document.getElementById(inputId);
+    if(!inputElement) return alert("Input field not found");
+    
+    const val = inputElement.value;
+    fetch('/admin/update-settings', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ key: key, value: val })
+    }).then(res => { 
+        if(res.ok) alert('Successfully updated: ' + key); 
+        else alert('Update failed. Check login session.');
+    });
+}
+
+        function saveSMTPConfig() {
+            commitSetting('smtp_host', 'inp-smtp-host');
+            commitSetting('smtp_port', 'inp-smtp-port');
+            commitSetting('smtp_user', 'inp-smtp-user');
+            commitSetting('smtp_pass', 'inp-smtp-pass');
+        }
+
+        // --- 3. CONTENT READ & WRITERS (SERVICES & PROJECTS) ---
+        function loadContentRegistries() {
+            fetch('/api/services').then(r => r.json()).then(data => {
+                localServices = data;
+                const list = document.getElementById('manage-services-list');
+                list.innerHTML = data.map(item => `
+                    <div class="bg-white border p-3 rounded-xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.image_url}" class="w-10 h-10 object-cover rounded-lg bg-gray-100">
+                            <div><p class="text-xs font-bold text-blue-950">${item.title}</p></div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="editService(${item.id})" class="text-[11px] font-bold text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded-lg transition">✏️ Edit</button>
+                            <button onclick="deleteContent('services', ${item.id})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            });
+
+            fetch('/api/projects').then(r => r.json()).then(data => {
+                localProjects = data;
+                const list = document.getElementById('manage-projects-list');
+                list.innerHTML = data.map(item => `
+                    <div class="bg-white border p-3 rounded-xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.image_url}" class="w-10 h-10 object-cover rounded-lg bg-gray-100">
+                            <div><p class="text-xs font-bold text-blue-950">${item.title}</p></div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="editProject(${item.id})" class="text-[11px] font-bold text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded-lg transition">✏️ Edit</button>
+                            <button onclick="deleteContent('projects', ${item.id})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function editService(id) {
+            const match = localServices.find(s => s.id === id);
+            if(!match) return;
+            document.getElementById('service-edit-id').value = match.id;
+            document.getElementById('service-title').value = match.title;
+            document.getElementById('service-description').value = match.description;
+            document.getElementById('service-content').value = match.content;
+            document.getElementById('service-image').required = false;
+            document.getElementById('form-services').action = '/admin/services/update';
+            document.getElementById('service-form-title').innerText = "Modify Service Node";
+            document.getElementById('service-submit-btn').innerText = "Update Existing Service Record";
+            document.getElementById('service-cancel-btn').classList.remove('hidden');
+        }
+
+        function resetServiceForm() {
+            document.getElementById('form-services').reset();
+            document.getElementById('service-edit-id').value = "";
+            document.getElementById('service-image').required = true;
+            document.getElementById('form-services').action = '/admin/services/create';
+            document.getElementById('service-form-title').innerText = "Add Service";
+            document.getElementById('service-submit-btn').innerText = "Publish Service";
+            document.getElementById('service-cancel-btn').classList.add('hidden');
+        }
+
+        function editProject(id) {
+            const match = localProjects.find(p => p.id === id);
+            if(!match) return;
+            document.getElementById('project-edit-id').value = match.id;
+            document.getElementById('project-title').value = match.title;
+            document.getElementById('project-location').value = match.location;
+            document.getElementById('project-content').value = match.content || '';
+            document.getElementById('project-image').required = false;
+            document.getElementById('form-projects').action = '/admin/projects/update';
+            document.getElementById('project-form-title').innerText = "Modify Project Footprint";
+            document.getElementById('project-submit-btn').innerText = "Update Existing Project Footprint";
+            document.getElementById('project-cancel-btn').classList.remove('hidden');
+        }
+
+        function resetProjectForm() {
+            document.getElementById('form-projects').reset();
+            document.getElementById('project-edit-id').value = "";
+            document.getElementById('project-image').required = true;
+            document.getElementById('form-projects').action = '/admin/projects/create';
+            document.getElementById('project-form-title').innerText = "Log Project";
+            document.getElementById('project-submit-btn').innerText = "Save Project";
+            document.getElementById('project-cancel-btn').classList.add('hidden');
+        }
+
+        function deleteContent(type, id) {
+            if(!confirm("Erase this item matrix parameter permanently?")) return;
+            fetch(`/admin/${type}/delete`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: id })
+            }).then(res => { if(res.ok) loadContentRegistries(); });
+        }
+
+        // --- 4. IDENTITY REGISTRY CONTROLLERS (CUSTOMERS & STAFF) ---
+        function loadUserRegistries() {
+            // Load Customers
+            fetch('/api/users/customers').then(r => r.json()).then(data => {
+                document.getElementById('customer-list').innerHTML = data.map(u => `
+                    <div class="bg-white border p-5 rounded-2xl space-y-3 shadow-sm">
+                        <div class="flex justify-between font-bold text-xs border-b pb-2">
+                            <p class="text-blue-950">${u.name} <span class="text-gray-400 font-normal">(@${u.username})</span></p>
+                            <button onclick="purgeIdentity(${u.id}, 'customer')" class="text-red-500 font-bold hover:underline">Delete</button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="name-${u.id}" value="${u.name}" class="border p-2 text-[10px] rounded">
+                            <input type="text" id="email-${u.id}" value="${u.email}" class="border p-2 text-[10px] rounded">
+                            <input type="text" id="phone-${u.id}" value="${u.phone}" class="border p-2 text-[10px] rounded">
+                            <input type="password" id="pass-${u.id}" placeholder="New Password" class="border p-2 text-[10px] rounded">
+                            <input type="text" id="address-${u.id}" value="${u.address}" class="col-span-2 border p-2 text-[10px] rounded">
+                        </div>
+                        <button onclick="commitUserChanges(${u.id})" class="w-full bg-gray-50 border border-gray-200 hover:bg-blue-950 hover:text-white transition text-[10px] font-bold py-2 rounded">Save Profile</button>
+                    </div>
+                `).join('');
+            });
+
+            // Load Staff Matrix
+            fetch('/api/users/staff').then(r => r.json()).then(data => {
+                localStaff = data;
+                document.getElementById('staff-list').innerHTML = data.map(s => {
+                    let badgeColor = s.role === 'Owner' ? 'bg-red-100 text-red-800' : (s.role === 'Manager' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800');
+                    return `
+                        <div class="p-4 flex justify-between items-center text-xs hover:bg-gray-50 transition">
+                            <div class="flex items-center gap-2">
+                                <span class="font-black text-gray-900">@${s.username}</span>
+                                <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded ${badgeColor}">${s.role} Level</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editStaff(${s.id})" class="text-purple-600 font-bold hover:underline">Edit</button>
+                                ${s.username !== 'Owner' ? `<button onclick="purgeIdentity(${s.id}, 'staff')" class="text-red-500 font-bold hover:underline">Revoke</button>` : '<span class="text-[10px] text-gray-400 italic">Protected</span>'}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        // --- NEW STAFF INTERFACE ACTIONS ---
+        function commitStaffForm(e) {
+            e.preventDefault();
+            const editId = document.getElementById('staff-edit-id').value;
+            
+            const payload = {
+                username: document.getElementById('staff-username').value,
+                role: document.getElementById('staff-role').value,
+                password: document.getElementById('staff-password').value
+            };
+
+            const endpoint = editId ? '/admin/staff/update' : '/admin/staff/create';
+            if(editId) payload.id = parseInt(editId);
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if(res.ok) {
+                    alert(editId ? 'Staff record updated.' : 'New operator provisioned successfully.');
+                    resetStaffForm();
+                    loadUserRegistries();
+                } else {
+                    alert('Action failed. Check console or role permission constraints.');
+                }
+            });
+        }
+
+        function editStaff(id) {
+            const s = localStaff.find(item => item.id === id);
+            if(!s) return;
+
+            document.getElementById('staff-edit-id').value = s.id;
+            document.getElementById('staff-username').value = s.username;
+            document.getElementById('staff-role').value = s.role;
+            
+            // Allow password to remain blank when updating profile
+            document.getElementById('staff-password').required = false;
+            document.getElementById('staff-password').placeholder = "Leave blank to keep current access key";
+            
+            document.getElementById('staff-form-title').innerText = "Modify Operator";
+            document.getElementById('staff-submit-btn').innerText = "Apply Record Changes";
+            document.getElementById('staff-cancel-btn').classList.remove('hidden');
+        }
+
+        function resetStaffForm() {
+            document.getElementById('form-staff').reset();
+            document.getElementById('staff-edit-id').value = "";
+            document.getElementById('staff-password').required = true;
+            document.getElementById('staff-password').placeholder = "••••••••";
+            document.getElementById('staff-form-title').innerText = "Provision Staff";
+            document.getElementById('staff-submit-btn').innerText = "Provision Operator";
+            document.getElementById('staff-cancel-btn').classList.add('hidden');
+        }
+
+        function commitUserChanges(id) {
+            const data = {
+                id: id,
+                name: document.getElementById(`name-${id}`).value,
+                email: document.getElementById(`email-${id}`).value,
+                phone: document.getElementById(`phone-${id}`).value,
+                address: document.getElementById(`address-${id}`).value,
+                new_password: document.getElementById(`pass-${id}`).value
+            };
+            fetch('/admin/users/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(res => { if(res.ok) alert('User Updated'); });
+        }
+
+        function purgeIdentity(id, context) {
+            if(!confirm(`Delete this system registration parameter profile?`)) return;
+            const endpoint = context === 'staff' ? '/admin/users/delete' : '/admin/users/delete'; 
+            
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id})
+            }).then(res => { if(res.ok) loadUserRegistries(); });
+        }
+// Function to save About text
+function updateAbout() {
+    const text = document.getElementById('about-input').value;
+    saveToServer('about_text', text);
+}
+
+// Function to save Dossier text
+function updateDossier() {
+    const text = document.getElementById('dossier-input').value;
+    saveToServer('dossier_text', text);
+}
+
+function saveToServer(key, value) {
+    fetch('/api/admin/update-text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+    }).then(res => alert("System Registry Updated"));
+}
+        // Initialize view terminal instance
+        switchTab('tab-logo');
+    </script>
+</body>
+</html>
